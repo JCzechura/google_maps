@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Snap to Road - Google Maps API v3</title>
+  <style type="text/css">
+    html, body {margin: 0; width:100%; height: 100%; }
+    #map_canvas { position:absolute; top:50px;bottom:0;left:0;right:0;}
+  </style>
+  <script type="text/javascript">
+  document.onreadystatechange = function() {
+  if (document.readyState === 'complete') {
+    fn();
+  }
+};
+function fn()
+{
+	document.getElementById('file').onchange = function(){
+
+		var file = this.files[0];
+
+		var reader = new FileReader();
+		reader.onload = function(progressEvent){
+			console.log(this.result);
+			var lines = this.result.split('\n');
+			for(var line = 0; line < lines.length; line++){
+				console.log(lines[line]);
+			}
+		};
+	  reader.readAsText(file);
+	};
+}
+</script>
+</head>
+<body >
+  <p style="margin:0;padding:10px;">Draw the route on the map. Hold shift to prevent a line segment from snapping to roads.</p>
+  <input type="file" name="file" id="file">
+</body>
+</html>
