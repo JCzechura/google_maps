@@ -13,42 +13,136 @@
     </script>
     <script type="text/javascript">
 	lat_lng = new Array();
-	lat_lng_out = new Array();
+	markers_out= [];
 	var l = 0;
 	var map;
-	var fin = false;
-	var wspolrzedne = new google.maps.LatLng(54.07232,18.76756320000004);
-	var wspolrzedne2 = new google.maps.LatLng(54.073,18.76756320000004);
-	//var wspolrzedne3 = new google.maps.LatLng(54.075,18.76756320000004);
-			var paths = [];
-		paths.push(new google.maps.LatLng(54.07232,18.76756320000004));
-		paths.push(new google.maps.LatLng(54.073,18.7675632000000));
-		paths.push(new google.maps.LatLng(54.075,18.76756320000004));
-	  document.onreadystatechange = function() {
+	var gps_correct = true;
+	//var paths = [];
+	var NS_arr = [];
+	var WE_arr = [];
+	var titles = [];
+	var IDcodes = [];
+	var first_line = false;
+	document.onreadystatechange = function() {
   if (document.readyState === 'complete') {
     fn();
   }
 };
 function fn()
 {
-	document.getElementById('file').onchange = function(){
-
+	document.getElementById('file').onchange = function()
+	{
 		var file = this.files[0];
-
 		var reader = new FileReader();
 		reader.readAsText(file, 'ISO-8859-1');
-		reader.onload = function(progressEvent){
+		reader.onload = function(progressEvent)
+		{
 			console.log(this.result);
 			var lines = this.result.split('\n');
-			for(var line = 0; line < lines.length; line++){
+			var title1 = "";
+			for(var line = 0; line < lines.length; line++)
+			{
 				console.log(lines[line]);
 				console.log(line);
+				var res = lines[line].split('#'); 
+				if (res.length == 5){console.log("res = 5");}                     // TUTAJ DOPISAC JESCZE OBSLUGE JAK SA PIERWSZE LINIJKI ###0# albo ###IDCode#0# !!!!!!!!!!!!!!!!!!!
+				else if (res.length == 1 ){console.log("res = 1");}
+				else
+				{                                          // TUTAJ DOPISAC JESCZE OBSLUGE BŁĘDBYCH DANYCH czyli ostatniego res == 0, ze zmienną gps_correct !!!!!!!!!!!!!!!!!!!
+					//jesli sprawdzono i dana jest poprawna (osttani res ==1) to:
+					console.log("res nie 1 ani nie 5");
+					var NS1 = parseFloat(res[1]) + parseFloat(res[2])/60;
+					if (res[3] == "N")
+						; else NS1 = NS1 * (-1);
+					var WE1 = parseFloat(res[4]) + parseFloat(res[5])/60;
+					if (res[6] == "E")
+						; else WE1 = WE1 * (-1);
+					if 	(( 49.14578361775004 < NS1 < 54.92082843149136 ) & ( 14.6337890625 < WE1 < 24.2578125 ))
+					{
+						console.log(NS_arr);
+						console.log(WE_arr);
+						console.log(first_line);
+						if (first_line == false)
+						{
+							first_line = true;
+							if  (res[7] != "1")
+							{
+								IDcodes.push(res[7]);
+								if (res[0].split(':').length == 3)
+									title1 = res[0] + " - " +  res[7];
+								else
+									title1 = res[7];
+							}else if (res[0].split(':').length == 3)
+								title1 = res[0];
+							else title1 = "";
+							console.log(title1);
+							titles.push(title1);
+							NS_arr.push(NS1);
+							WE_arr.push(WE1);
+							//paths.push(new google.maps.LatLng(NS1,WE1));
+							var markerl = new google.maps.Marker({
+								position: new google.maps.LatLng(NS1,WE1),
+								map: map,
+								visible: true,
+								icon: 'green_button.png',
+								title:title1
+							});
+							if (res[7] != "1")
+								markerl.setIcon('trash11.png');
+							if (res[7] == "24848484856654951666750533")
+								markerl.setIcon('trash_red.png');
+							if (res[7] == "24848484865575655655256653")
+								markerl.setIcon('trash_red.png');
+							if (res[7] == "!!!")
+								markerl.setIcon('landfill1.png');
+							markers_out.push(markerl);
+						}
+						else
+						{
+							var lat = NS_arr[NS_arr.length - 1];
+							var lng = WE_arr[WE_arr.length - 1];
+							console.log(lat);
+							console.log(lng);
+							if ((Math.abs(lat - NS1) > 0.0003)  || (Math.abs(lng - WE1) > 0.0005) || res[7] != "1" || res[7] == "!!!")
+							{
+								if  (res[7] != "1")
+							{
+								IDcodes.push(res[7]);
+								if (res[0].split(':').length == 3)
+									title1 = res[0] + " - " +  res[7];
+								else
+									title1 = res[7];
+							}else if (res[0].split(':').length == 3)
+								title1 = res[0];
+							else title1 = "";
+								console.log(title1);
+								titles.push(title1);
+								NS_arr.push(NS1);
+								WE_arr.push(WE1);
+								//paths.push(new google.maps.LatLng(NS1,WE1));
+								var markerl = new google.maps.Marker({
+									position: new google.maps.LatLng(NS1,WE1),
+									map: map,
+									visible: true,
+									icon: 'green_button.png',
+									title:title1
+								});
+								if (res[7] != "1")
+									markerl.setIcon('trash11.png');
+								if (res[7] == "24848484856654951666750533")
+									markerl.setIcon('trash_red.png');
+								if (res[7] == "24848484865575655655256653")
+									markerl.setIcon('trash_red.png');
+								if (res[7] == "!!!")
+									markerl.setIcon('landfill1.png');
+								markers_out.push(markerl);
+							}
+						}
+					}
+				}
 			}
 			console.log("skonczylem");
-			fin = true;
-			dodajMarkerSnap(paths,rysuj_time);
 		};
-	  reader.readAsText(file);
 	};
 }
 	
@@ -64,94 +158,34 @@ function fn()
 	
 	function dodajMarker(lat,lon,opcjeMarkera)
 			{
-				// tworzymy marker z współrzędnymi i opcjami z argumentów funkcji dodajMarker
 				opcjeMarkera.position = new google.maps.LatLng(lat,lon);
 				
-				opcjeMarkera.map = map; // obiekt mapa jest obiektem globalnym!
+				opcjeMarkera.map = map;
 				var marker = new google.maps.Marker(opcjeMarkera);
 			}
-	function dodajMarkerSnap(wspolrzedne, _callback)
+	function title_time()
 	{
-	var aaa = false;
-	console.log(aaa);
-	for (var i = 0; i < wspolrzedne.length; i++) 
+		console.log("zara nowy tytex");
+		var myVar = setTimeout(title, 10000);
+	}
+	function title()
 	{
-		console.log(aaa);
-		var directionsServiceSnap = new google.maps.DirectionsService();
-		var requestSnap = {
-			origin:wspolrzedne[i], 
-			destination:wspolrzedne[i],
-			travelMode: google.maps.DirectionsTravelMode.DRIVING
-		};
-		directionsServiceSnap.route(requestSnap, function(response, status) {
-		if (status == google.maps.DirectionsStatus.OK) {
-			 var marker = new google.maps.Marker({
-             position: response.routes[0].legs[0].start_location, 
-             map: map,
-             title:"Hello World!"
-			});
-			var lat = marker.getPosition().lat();
-			var lng = marker.getPosition().lng();
-			console.log(lat);
-			console.log(lng);
-			var myLatlng = new google.maps.LatLng(lat,lng);
-            lat_lng.push(myLatlng);
-			console.log(lat_lng.length);
-			console.log(aaa);
-		}
-		});
-		if (i === (wspolrzedne.length - 1))
-			aaa = true;
-	}
-		if (aaa)
-			_callback();
-	}
-	function rysuj_time()
-	{
-		var myVar = setTimeout(rysuj, 3000);
-	}
-	function rysuj()
-	{	
-		   console.log("wchodze w rysuj");
-	       var path = new google.maps.MVCArray();
-           var service = new google.maps.DirectionsService();
-           var infoWindow = new google.maps.InfoWindow();
-           var poly = new google.maps.Polyline({ map: map, strokeColor: '#FF8200' });
-		   console.log(lat_lng.length);
-           for (var i = 0; i < lat_lng.length; ++i) {
-		   console.log(i);
-               if ((i + 1) < lat_lng.length) {
-                   var src = lat_lng[i];
-                   var des = lat_lng[i + 1];
-                   path.push(src);
-                   poly.setPath(path);
-                   service.route({
-                       origin: src,
-                       destination: des,
-                       travelMode: google.maps.DirectionsTravelMode.DRIVING
-                   }, function (result, status) {
-                       if (status == google.maps.DirectionsStatus.OK) {
-                           for (var j = 0, len = result.routes[0].overview_path.length; j < len; j++) {
-                               path.push(result.routes[0].overview_path[j]);
-                           }
-                       }
-                   });
-               }
-           }
-		   console.log("wychodze z rysuj");
+	console.log("zmieniam tyt");
+		markers_out[markers_out.length-1].setTitle("new title");
+		 console.log("nowy tytex");
 	}
       function initialize() {
         var myOptions = {
           center: new google.maps.LatLng(54.0924200,18.7778700),
           zoom: 13,
           mapTypeId: google.maps.MapTypeId.ROADMAP,
-		  disableDefaultUI: true
+		  disableDefaultUI: false
         };
-
-		//setTimeout(dodajMarkerSnap(wspolrzedne), 10);
-		//setTimeout(dodajMarkerSnap(wspolrzedne2), 20);
-		//setTimeout(rysuj, 300);
         map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+		 google.maps.event.addListener(map, 'click', function(event) {
+   console.log("Latitude: " + event.latLng.lat() + " " + ", longitude: " + event.latLng.lng());
+   
+  });
 }
     </script> 
   </head>
