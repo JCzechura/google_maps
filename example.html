@@ -20,6 +20,9 @@
 	var WE_arr = [];
 	var titles = [];
 	var IDcodes = [];
+	var BaseIDCodes = [];
+	var BaseAddresses = [];
+	var BasePositions = [];
 	var first_line = false;
 	
 	document.onreadystatechange = function() {
@@ -65,7 +68,7 @@ function fn()
 						if (first_line == false)
 						{
 							first_line = true;
-							if  (res[7] != "1")
+							if  (res[7].length>4)
 							{
 								IDcodes.push(res[7]);
 								if (res[0].split(':').length == 3)
@@ -89,10 +92,6 @@ function fn()
 							});
 							if (res[7] != "1")
 								markerl.setIcon('trash11.png');
-							if (res[7] == '24848484856667068494954553piaty')
-								markerl.setIcon('trash_red.png');
-							if (res[7] == '24848484865575655655256653szosty')
-								markerl.setIcon('trash_red.png');
 							if (res[7] == "!!!")
 								markerl.setIcon('landfill1.png');
 							markers_out.push(markerl);
@@ -105,39 +104,79 @@ function fn()
 							console.log(lng);
 							if ((Math.abs(lat - NS1) > 0.0003)  || (Math.abs(lng - WE1) > 0.0005) || res[7] != "1" || res[7] == "!!!")
 							{
-								if  (res[7] != "1")
-							{
-								IDcodes.push(res[7]);
-								if (res[0].split(':').length == 3)
-									title1 = res[0] + " - " +  res[7];
-								else
-									title1 = res[7];
-							}else if (res[0].split(':').length == 3)
-								title1 = res[0];
-							else title1 = "";
-								console.log(title1);
-								titles.push(title1);
-								NS_arr.push(NS1);
-								WE_arr.push(WE1);
-								//paths.push(new google.maps.LatLng(NS1,WE1));
-								var markerl = new google.maps.Marker({
-									position: new google.maps.LatLng(NS1,WE1),
-									map: map,
-									visible: true,
-									icon: 'green_button.png',
-									title:title1
-								});
-								if (res[7] != "1")
-									markerl.setIcon('trash11.png');
-								if (res[7] == "!!!")
-									markerl.setIcon('landfill1.png');
-								markers_out.push(markerl);
+								if  (res[7].length>4)
+								{
+									IDcodes.push(res[7]);
+									if (res[0].split(':').length == 3)
+										title1 = res[0] + " - " +  res[7];
+									else
+										title1 = res[7];
+								}else if (res[0].split(':').length == 3)
+									title1 = res[0];
+								else title1 = "";
+									console.log(title1);
+									titles.push(title1);
+									NS_arr.push(NS1);
+									WE_arr.push(WE1);
+									//paths.push(new google.maps.LatLng(NS1,WE1));
+									var markerl = new google.maps.Marker({
+										position: new google.maps.LatLng(NS1,WE1),
+										map: map,
+										visible: true,
+										icon: 'green_button.png',
+										title:title1
+									});
+									if (res[7] != "1")
+										markerl.setIcon('trash11.png');
+									if (res[7] == "!!!")
+										markerl.setIcon('landfill1.png');
+									markers_out.push(markerl);
 							}
 						}
 					}
 				}
 			}
 			console.log("skonczylem");
+			console.log(BaseIDCodes);
+			console.log(IDcodes);
+			for(var i = 0; i < BaseIDCodes.length; i++)
+			{
+				var IDChecked = false;
+				for(var j = 0; j < IDcodes.length; j++)
+				{
+				console.log("BaseIDCodes[i]");
+				console.log(BaseIDCodes[i]);
+				console.log("IDcodes[j]");
+				console.log(IDcodes[j]);
+					if (IDcodes[j] == BaseIDCodes[i])
+						IDChecked = true;
+				console.log(IDChecked);
+				}
+				console.log(IDChecked);
+												console.log(IDChecked);
+																console.log(IDChecked);
+				if (IDChecked == false)
+					var markerl = new google.maps.Marker({
+						position: BasePositions[i],
+						map: map,
+						visible: true,
+						icon: 'trash_red.png',
+						title:BaseAddresses[i]
+					});
+			}
+			console.log("skonczylem całkiem");
+			var deb = "12345671234567222";
+			console.log(parseFloat(deb));
+			console.log(parseFloat(BaseIDCodes[3]));
+			   var domain, number, pieces;
+
+    domain =BaseIDCodes[3];
+    number = 13;//Math.ceil(Math.random() * (domain.length - 1));
+    pieces = [domain.substring(number, -number), domain.substring(number)];
+
+    console.log(pieces);
+	 console.log(parseFloat(pieces[0]));
+	  console.log(parseFloat(pieces[1]));
 		};
 	};
 }
@@ -152,11 +191,14 @@ function fn2()
 		{
 			console.log(this.result);
 			var lines = this.result.split('\n');
-			var title1 = "";
 			for(var line = 0; line < lines.length; line++)
 			{
 				console.log(lines[line]);
 				console.log(line);
+				var res = lines[line].split('#'); 
+				BaseIDCodes.push(res[0]);
+				BaseAddresses.push(res[1]);
+				BasePositions.push(new google.maps.LatLng(res[2],res[3]));	
 			}
 		}
 	
@@ -206,7 +248,7 @@ function fn2()
   <body padding = 2cm 4cm 3cm 4cm background="ccc.png" onload="initialize()">
   <h1>System wspomagania monitoringu gospodarki odpadami komunalnymi</h1>
   <div id="rodzic">
-    <div id="map_canvas" style="width:50%; height:80%"></div>
+    <div id="map_canvas" style="width:50%; height:95%"></div>
 	<div id="filef" ><label for="file" class="custom-file-upload">
     <i class="fa fa-cloud-upload"></i> Załaduj trasę
 </label>
