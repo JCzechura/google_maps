@@ -4,12 +4,8 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <style type="text/css">
-      html { height: 100% }
-      body { height: 100%; margin: 0; padding: 0.5cm 0.5cm 0.5cm 0.5cm }
-      #map_canvas {    border-style: solid;
-    border-color: #D8D8D8;
-	border-width: 10px;padding: 1cm 1cm 1cm 1cm}
     </style>
+	<link rel="Stylesheet" type="text/css" href="style.css" />
     <script type="text/javascript"
       src="http://maps.googleapis.com/maps/api/js?&sensor=false">
     </script>
@@ -25,9 +21,11 @@
 	var titles = [];
 	var IDcodes = [];
 	var first_line = false;
+	
 	document.onreadystatechange = function() {
   if (document.readyState === 'complete') {
     fn();
+	fn2();
   }
 };
 function fn()
@@ -131,10 +129,6 @@ function fn()
 								});
 								if (res[7] != "1")
 									markerl.setIcon('trash11.png');
-								if (res[7] == '24848484856667068494954553piaty')
-									markerl.setIcon('trash_red.png');
-								if (res[7] == '24848484865575655655256653szosty')
-									markerl.setIcon('trash_red.png');
 								if (res[7] == "!!!")
 									markerl.setIcon('landfill1.png');
 								markers_out.push(markerl);
@@ -147,9 +141,27 @@ function fn()
 		};
 	};
 }
+function fn2()
+{
+	document.getElementById('file1').onchange = function()
+	{	
+		var file = this.files[0];
+		var reader = new FileReader();
+		reader.readAsText(file, 'ISO-8859-1');
+		reader.onload = function(progressEvent)
+		{
+			console.log(this.result);
+			var lines = this.result.split('\n');
+			var title1 = "";
+			for(var line = 0; line < lines.length; line++)
+			{
+				console.log(lines[line]);
+				console.log(line);
+			}
+		}
 	
-	
-	
+	};
+}
 	
 	function markers(_callback)
 	{
@@ -192,7 +204,18 @@ function fn()
     </script> 
   </head>
   <body padding = 2cm 4cm 3cm 4cm background="ccc.png" onload="initialize()">
+  <h1>System wspomagania monitoringu gospodarki odpadami komunalnymi</h1>
+  <div id="rodzic">
     <div id="map_canvas" style="width:50%; height:80%"></div>
-	<div><input type="file" name="file" id="file"></div>
+	<div id="filef" ><label for="file" class="custom-file-upload">
+    <i class="fa fa-cloud-upload"></i> Załaduj trasę
+</label>
+<input id="file" type="file"/>
+<label for="file1" class="custom-file-upload">
+    <i class="fa fa-cloud-upload"></i> Załaduj bazę adresów
+</label>
+<input id="file1" type="file"/>
+</div>
+	</div>
   </body>
 </html>

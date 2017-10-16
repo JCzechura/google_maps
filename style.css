@@ -1,0 +1,105 @@
+    html 
+	{ 
+		height: 100% 
+	}
+    body 
+	{ 
+		height: 100%; 
+		margin: 0; 
+		padding: 0cm 0.5cm 0.5cm 0.5cm;
+	}
+	@font-face {
+    font-family: "software_tester_7";
+    src: url("software_tester_7.ttf");
+}
+@font-face {
+    font-family: "elegant_line_7";
+    src: url("elegant_line_7.ttf");
+}
+@font-face {
+    font-family: "Exo2-RegularExpanded";
+    src: url("Exo2-BoldExpanded.otf");
+}
+    #map_canvas 
+	{ 
+		width:40%; 
+		height:80%;
+		float:left;
+		border-style: solid;
+		border-color: #D8D8D8;
+		border-width: 10px;
+		padding: 0cm 1cm 1cm 1cm;
+	}
+	#filef 
+	{
+		padding: 0.5cm 0.5cm 0.5cm 0.5cm;
+		width:30%; 
+		float:left;
+	}	
+	#rodzic 
+	{
+		height:100%;
+	}
+	input[type="file"] 
+	{
+		display: none;
+	}
+		.custom-file-upload {
+					border: 1px solid #ccc;
+		display: inline-block;
+		padding: 6px 12px;
+		cursor: pointer;
+		border-radius: 25px;
+		background: url(green_button.png);
+		background-position: left top;
+	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	box-shadow:inset 0px 1px 0px 0px #ffffff;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #F6F9F9), color-stop(1, #D8D8D8));
+	background:-moz-linear-gradient(top, #F6F9F9 5%, #D8D8D8 100%);
+	background:-webkit-linear-gradient(top, #F6F9F9 5%, #D8D8D8 100%);
+	background:-o-linear-gradient(top, #F6F9F9 5%, #D8D8D8 100%);
+	background:-ms-linear-gradient(top, #F6F9F9 5%, #D8D8D8 100%);
+	background:linear-gradient(to bottom, #F6F9F9 5%, #D8D8D8 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#F6F9F9', endColorstr='#D8D8D8',GradientType=0);
+	background-color:#F6F9F9;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #dcdcdc;
+	display:inline-block;
+	cursor:pointer;
+	color:#777777;
+	font-family: Exo2-RegularExpanded ;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #ffffff;
+}
+.custom-file-upload :hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #D8D8D8), color-stop(1, #F6F9F9));
+	background:-moz-linear-gradient(top, #D8D8D8 5%, #F6F9F9 100%);
+	background:-webkit-linear-gradient(top, #D8D8D8 5%, #F6F9F9 100%);
+	background:-o-linear-gradient(top, #D8D8D8 5%, #F6F9F9 100%);
+	background:-ms-linear-gradient(top, #D8D8D8 5%, #F6F9F9 100%);
+	background:linear-gradient(to bottom, #D8D8D8 5%, #F6F9F9 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#D8D8D8', endColorstr='#F6F9F9',GradientType=0);
+	background-color:#D8D8D8;
+}
+.custom-file-upload :active {
+	position:relative;
+	top:1px;
+}
+h1
+{
+	text-align: center;
+	letter-spacing: 6px;
+	color: gray;
+	padding:6px 24px;
+	font-family: elegant_line_7 ;
+	font-size:50px;
+	font-weight: bold;
+	text-shadow: 1px 1px 1px #000, 
+               3px 3px 5px blue; 
+}
