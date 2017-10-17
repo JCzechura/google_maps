@@ -25,7 +25,7 @@
 }
     #map_canvas 
 	{ 
-		width:40%; 
+		width:65%; 
 		height:100%;
 		float:left;
 		border-style: solid;
@@ -85,6 +85,10 @@
 	padding:6px 24px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #ffffff;
+	width:100%; 
+		float:left;
+		margin-bottom: 20px;
+	}	
 }
 .custom-file-upload :hover {
 	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #D8D8D8), color-stop(1, #F6F9F9));
@@ -112,4 +116,50 @@ h1
 	font-weight: bold;
 	text-shadow: 1px 1px 1px #000, 
                3px 3px 5px blue; 
+}
+#textboxes
+{
+	padding-top: 0px;
+    padding-right: 0.5cm;
+     padding-bottom: 0px;
+    padding-left: 0.5cm;
+	height:83%;
+	width:30%;
+float:left;	
+}
+#list
+{
+	height:50%;
+	width:100%;
+	border:1px solid #ccc;
+	font:16px/26px Georgia, Garamond, Serif;
+	overflow:auto;
+	background-color:#E7E3E3;
+	width:100%;
+	}
+#txt1
+{
+	font-size:15px;
+	font-family: Exo2-RegularExpanded ;
+	color:#B40404;
+	white-space: pre-wrap;
+}
+#txt2
+{
+	font-size:15px;
+	font-family: Exo2-RegularExpanded ;
+	color:#088A08;
+	white-space: pre-wrap;
+}
+#checked
+{
+	font-size:20px;
+	font-family: Exo2-RegularExpanded ;
+	color:#610B0B;
+}
+#not_checked
+{
+	font-size:20px;
+	font-family: Exo2-RegularExpanded ;
+	color:#21610B;
 }

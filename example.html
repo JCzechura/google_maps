@@ -139,6 +139,8 @@ function fn()
 			console.log("skonczylem");
 			console.log(BaseIDCodes);
 			console.log(IDcodes);
+							var checked_counter = 0;
+				var not_checked_counter = 0;
 			for(var i = 0; i < BaseIDCodes.length; i++)
 			{
 				var IDChecked = false;
@@ -148,14 +150,16 @@ function fn()
 				console.log(BaseIDCodes[i]);
 				console.log("IDcodes[j]");
 				console.log(IDcodes[j]);
-					if (IDcodes[j] == BaseIDCodes[i])
+					if (IDcodes[j].trim() == BaseIDCodes[i].trim())
 						IDChecked = true;
 				console.log(IDChecked);
 				}
 				console.log(IDChecked);
-												console.log(IDChecked);
-																console.log(IDChecked);
+				console.log(IDChecked);
+				console.log(IDChecked);
 				if (IDChecked == false)
+				{
+					not_checked_counter++;
 					var markerl = new google.maps.Marker({
 						position: BasePositions[i],
 						map: map,
@@ -163,6 +167,23 @@ function fn()
 						icon: 'trash_red.png',
 						title:BaseAddresses[i]
 					});
+					var text1 = document.getElementById('txt1');
+					if (not_checked_counter == 1)
+						text1.value=not_checked_counter + ". "+ BaseAddresses[i] +" - "+ BasePositions[i].lat() +" N, "+ BasePositions[i].lng() +" E"+ "\n";
+					else
+						text1.value+=not_checked_counter + ". "+ BaseAddresses[i] +" - "+ BasePositions[i].lat() +" N, "+ BasePositions[i].lng() +" E"+ "\n";	
+				}
+				else
+				{
+					checked_counter++;
+					console.log(checked_counter);
+					var text2 = document.getElementById('txt2');
+					if (checked_counter == 1)
+						text2.value=checked_counter+". "+ BaseAddresses[i] +" - "+ BasePositions[i].lat() +" N, "+ BasePositions[i].lng() +" E"+ "\n";
+					else
+						text2.value+=checked_counter+". "+ BaseAddresses[i] +" - "+ BasePositions[i].lat() +" N, "+ BasePositions[i].lng() +" E"+ "\n";	
+				
+				}
 			}
 			console.log("skonczylem całkiem");
 			var deb = "12345671234567222";
@@ -248,16 +269,29 @@ function fn2()
   <body padding = 2cm 4cm 3cm 4cm background="ccc.png" onload="initialize()">
   <h1>System wspomagania monitoringu gospodarki odpadami komunalnymi</h1>
   <div id="rodzic">
-    <div id="map_canvas" style="width:50%; height:95%"></div>
-	<div id="filef" ><label for="file" class="custom-file-upload">
-    <i class="fa fa-cloud-upload"></i> Załaduj trasę
-</label>
-<input id="file" type="file"/>
-<label for="file1" class="custom-file-upload">
-    <i class="fa fa-cloud-upload"></i> Załaduj bazę adresów
-</label>
-<input id="file1" type="file"/>
-</div>
+    <div id="map_canvas" style="width:60%; height:95%">
 	</div>
+		<div id="filef">
+			<label for="file1" class="custom-file-upload">
+				<i class="fa fa-cloud-upload"></i>1. Załaduj plik z adresami i kodami poszczególnych pojemników
+			</label>
+			<input id="file1" type="file"/>
+			<br></br>
+			<label for="file" class="custom-file-upload">
+				<i class="fa fa-cloud-upload"></i> 2. Załaduj plik z trasą przebytą przez pojazd
+			</label>
+			<input id="file" type="file"/>
+		</div>
+		<div id="textboxes">
+			<div id="list">
+				<p id="checked">POJEMNIKI NIEOBSŁUŻONE</p>
+				<output type="text" id="txt1"/>
+				</div>
+			<div id="list">
+				<p id="not_checked">POJEMNIKI OBSŁUŻONE</p>
+				<output type="text" id="txt2"/>
+			</div>
+		</div>
+   </div>
   </body>
 </html>
