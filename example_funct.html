@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style type="text/css">
+    </style>
+	<link rel="Stylesheet" type="text/css" href="style.css" />
+    <script type="text/javascript"
+      src="http://maps.googleapis.com/maps/api/js?&sensor=false">
+    </script>
+    <script type="text/javascript">
+	
+	var map;
+	var BaseIDCodes = [];
+	var BaseAddresses = [];
+	var BaseLat = [];
+	var BaseLng = [];
+	var BaseBeginningMarker;
+	var titles = [];
+	var NS_arr = [];
+	var WE_arr = [];
+	var IDcodes = [];
+	var markers_out = [];
+	var address = "";
+	var title = "";
+	var infowindow = new google.maps.InfoWindow({content:""});
+	var unlicensedLandfillSites = 0;
+	document.onreadystatechange = function() 
+	{
+		if (document.readyState === 'complete')
+		{
+			read_sensors_data();
+			read_base_data();
+		}
+	};
+	function read_sensors_data()
+	{
+		var first_line = true;
+		document.getElementById('file2').onchange = function()
+		{	
+			var file = this.files[0];
+			var reader = new FileReader();
+			reader.readAsText(file, 'ISO-8859-1');
+			reader.onload = function(progressEvent)
+			{
+				var lines = this.result.split('\n');
+				for(var line = 0; line < lines.length; line++)
+				{
+					var res = lines[line].split('#'); 
+					if (res.length == 5)
+					{
+						if (res[3] == "!!!")
+							checkLandfillSiteInWrongSentence();
+						else
+							checkIDCodeInWrongSentence(res[3] );
+					}
+					else
+						if (res.length > 8)
+						{    
+							if ((res[3] == "N") && (res[6] == "E") && (res[res.length-2] == "1"))
+							{
+								var NS1 = parseFloat(res[1]) + parseFloat(res[2])/60;
+								var WE1 = parseFloat(res[4]) + parseFloat(res[5])/60;
+								if 	(( 49.14578361775004 < NS1 ) && (NS1 < 54.92082843149136 ) && ( 14.6337890625 < WE1) && (WE1 < 24.2578125 ))
+								{
+									if (first_line == true)
+									{
+										first_line = false;
+										placeMarker(res,NS1, WE1);
+									}
+									else
+									{
+										var lat = NS_arr[NS_arr.length - 1];
+										var lng = WE_arr[WE_arr.length - 1];
+										if ((Math.abs(lat - NS1) > 0.0003)  || (Math.abs(lng - WE1) > 0.0005) || res[7] != "1" || res[7] == "!!!")
+										{
+											placeMarker(res,NS1, WE1);
+										}
+									}
+								}
+								else 
+								{
+									if (res[7] == "!!!")
+										checkLandfillSiteInWrongSentence();
+									else
+										checkIDCodeInWrongSentence(res[7] );
+								}
+							} 
+							else 
+							{
+								if (res[7] == "!!!")
+									checkLandfillSiteInWrongSentence();
+								else
+									checkIDCodeInWrongSentence(res[7]);
+							}
+						}
+				}
+				var checked_counter = 0;
+				var not_checked_counter = 0;
+				for(var i = 0; i < BaseIDCodes.length; i++)
+				{
+					var IDChecked = false;
+					for(var j = 0; j < IDcodes.length; j++)
+					{
+						if (IDcodes[j].trim() == BaseIDCodes[i].trim())
+							IDChecked = true;
+					}
+					if (IDChecked == false)
+					{
+						not_checked_counter++;
+						var markerl = new google.maps.Marker({
+							position: new google.maps.LatLng(BaseLat[i], BaseLng[i]),
+							map: map,
+							visible: true,
+							icon: 'trash_red.png',
+							title:BaseAddresses[i]
+						});
+						var text1 = document.getElementById('txt1');
+						if (not_checked_counter == 1)
+							text1.value=not_checked_counter + ". "+ BaseAddresses[i] +" - "+ BaseLat[i] +" N, "+ BaseLng[i] +" E"+ "\n";
+						else
+							text1.value+=not_checked_counter + ". "+ BaseAddresses[i] +" - "+ BaseLat[i] +" N, "+ BaseLng[i] +" E"+ "\n";	
+					}
+					else
+					{
+						checked_counter++;
+						var text2 = document.getElementById('txt2');
+						if (checked_counter == 1)
+							text2.value=checked_counter+". "+ BaseAddresses[i] +" - "+ BaseLat[i] +" N, "+ BaseLng[i] +" E"+ "\n";
+						else
+							text2.value+=checked_counter+". "+ BaseAddresses[i] +" - "+ BaseLat[i] +" N, "+ BaseLng[i] +" E"+ "\n";
+					}
+				}
+			};
+		};
+	}
+	function read_base_data()
+	{
+		document.getElementById('file1').onchange = function()
+		{	
+			var file = this.files[0];
+			var reader = new FileReader();
+			reader.readAsText(file, 'ISO-8859-1');
+			reader.onload = function(progressEvent)
+			{
+				console.log(this.result);
+				var lines = this.result.split('\n');
+				for(var line = 0; line < lines.length; line++)
+				{
+					console.log(lines[line]);
+					console.log(line);
+					var res = lines[line].split('#'); 
+					if (res[0] == "!")
+					{
+						BaseBeginningMarker  = new google.maps.Marker({
+							position: new google.maps.LatLng(res[1],res[2]),
+							map: map,
+							visible: true,
+							icon: 'orange_button.png',
+							title:"punk początku i konca trasy"
+						});
+					}
+					else
+					{
+						BaseIDCodes.push(res[0]);
+						BaseAddresses.push(res[1]);
+						BaseLat.push(res[2]);	
+						BaseLng.push(res[3]);
+					}					
+				}
+			}
+		
+		};
+	}
+	
+	function checkIDCodeInWrongSentence(code)
+	{
+		if  (code.length>4)
+		{
+			for(var i = 0; i < BaseIDCodes.length; i++)
+			{
+				if (code.trim() == BaseIDCodes[i].trim())
+				{
+					address = BaseAddresses[i];
+					IDcodes.push(code);
+					var markerl = new google.maps.Marker({
+						position: new google.maps.LatLng(BaseLat[i], BaseLng[i]),
+						map: map,
+						visible: true,
+						icon: 'trash11.png',
+						title:address
+					});
+				}
+			}	
+		}
+	}
+	function checkIDCodeInCorrectSentence(code, time,NS1, WE1)
+	{
+		if  (code.length>4)
+		{
+			title = "";
+			for(var i = 0; i < BaseIDCodes.length; i++)
+			{
+				if (code.trim() == BaseIDCodes[i].trim())
+					address = BaseAddresses[i];
+			}
+			IDcodes.push(code);
+			if (titles.length > 1)
+				if ((NS1 == NS_arr[NS_arr.length - 1]) && (WE1 = WE_arr[WE_arr.length - 1]) && titles[titles.length - 1].indexOf(" - ") > -1)
+					title = titles[titles.length - 1] + "\n";
+				else title = "";
+			if (time.split(':').length == 3)
+				title += time + " - " + address;
+			else
+				title += address;
+		}else if (time.split(':').length == 3)
+			title = time;
+		else title = "";
+	}
+	function checkLandfillSiteInWrongSentence()
+	{
+			unlicensedLandfillSites++;
+			var info = "UWAGA! na trasie wykryto wyładowania odpadów w miejscach nieosiągalnych przez GPS - ilość: " + unlicensedLandfillSites;
+			infowindow.setContent(info);
+			infowindow.open(map, BaseBeginningMarker);
+	}
+	function placeMarker(res,NS1, WE1)
+	{
+		checkIDCodeInCorrectSentence(res[7],res[0],NS1, WE1);
+		NS_arr.push(NS1);
+		WE_arr.push(WE1);
+		var markerl = new google.maps.Marker({
+			position: new google.maps.LatLng(NS1,WE1),
+			map: map,
+			visible: true,
+			icon: 'green_button.png',
+			title:title
+		});
+		if (res[7] != "1")
+			markerl.setIcon('trash11.png');
+		if (res[7] == "!!!")
+			markerl.setIcon('landfill1.png');
+		markers_out.push(markerl);
+		titles.push(title);
+	}
+	function initialize() {
+		var myOptions = {
+			center: new google.maps.LatLng(54.0924200,18.7778700),
+			zoom: 13,
+			mapTypeId: google.maps.MapTypeId.ROADMAP,
+			disableDefaultUI: false
+		};
+		map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+	}
+    </script> 
+  </head>
+  <body onload="initialize()">
+  <h1>System wspomagania monitoringu gospodarki odpadami komunalnymi</h1>
+  <div id="rodzic">
+    <div id="map_canvas" style="width:60%; height:95%">
+	</div>
+		<div id="filef">
+			<label for="file1" class="custom-file-upload">
+				<i class="fa fa-cloud-upload"></i>1. Załaduj plik z adresami i kodami poszczególnych pojemników
+			</label>
+			<input id="file1" type="file"/>
+			<br></br>
+			<label for="file2" class="custom-file-upload">
+				<i class="fa fa-cloud-upload"></i> 2. Załaduj plik z trasą przebytą przez pojazd
+			</label>
+			<input id="file2" type="file"/>
+		</div>
+		<div id="textboxes">
+			<div id="list">
+				<p id="checked">POJEMNIKI NIEOBSŁUŻONE</p>
+				<output type="text" id="txt1"/>
+				</div>
+			<div id="list">
+				<p id="not_checked">POJEMNIKI OBSŁUŻONE</p>
+				<output type="text" id="txt2"/>
+			</div>
+		</div>
+   </div>
+  </body>
+</html>

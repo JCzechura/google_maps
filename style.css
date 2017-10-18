@@ -6,10 +6,11 @@
 	{ 
 		height: 100%; 
 		margin: 0; 
-		 padding-top: 0px;
-    padding-right: 0.5cm;
-    padding-bottom: 0px;
-    padding-left: 0.5cm;
+				 padding-top: 0px;
+		padding-right: 0.5cm;
+		padding-bottom: 0px;
+		padding-left: 0.5cm;
+		background-image: url("ccc.png");
 	}
 	@font-face {
     font-family: "software_tester_7";
