@@ -12,10 +12,6 @@
 		padding-left: 0.5cm;
 		background-image: url("ccc.png");
 	}
-	@font-face {
-    font-family: "software_tester_7";
-    src: url("software_tester_7.ttf");
-}
 @font-face {
     font-family: "elegant_line_7";
     src: url("elegant_line_7.ttf");
