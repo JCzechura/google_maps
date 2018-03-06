@@ -1,4 +1,4 @@
-# google_maps
+# User interface that shows the data collected during the route of a garbage truck.
 
 PL:
 
