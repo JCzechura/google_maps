@@ -12,7 +12,7 @@ Aby poprawnie uruchomić aplikację należy:
     - test_2.txt.
     - test_3.txt.
     - test_4.txt.
-  każdy z nich pokazuje odmienną sytuację, pierwszy ilustruje poprawnie przebytą trasę, następne natomiast mają za zadanie zademonstrować   reakcję systemu na błędne dane bądź niepoprawnie odbyty kurs.
+każdy z nich pokazuje odmienną sytuację, pierwszy ilustruje poprawnie przebytą trasę, następne natomiast mają za zadanie zademonstrować   reakcję systemu na błędne dane bądź niepoprawnie odbyty kurs.
   
   Wykorzystano
   - HTML/CSS - do odpowiedniej wizualizacji danych i stworzenia interfejsu użytkownika,
